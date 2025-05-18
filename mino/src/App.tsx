@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Welcome from './pages/Welcome';
 import Login from './pages/Login';
-import Journal from './pages/Journal';
+import MainPage from './pages/MainPage';
 
 function App() {
     return (
@@ -10,7 +10,7 @@ function App() {
         <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/journal" element={<Journal />} />
+            <Route path="/mainpage" element={<MainPage />} />
         </Routes>
         </AnimatePresence>
     )
