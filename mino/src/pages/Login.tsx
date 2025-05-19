@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 function Login() {
     const navigate = useNavigate();
     const handleMain = () => {
-        navigate('/journal');
+        navigate('/mainpage');
     };
 
     return (
