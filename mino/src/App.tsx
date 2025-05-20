@@ -4,6 +4,7 @@ import Welcome from './pages/Welcome';
 import Login from './pages/Login';
 import MainPage from './pages/MainPage';
 import SaveJournal from './pages/SaveJournal';
+import Testing from './pages/Testing';
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/mainpage" element={<MainPage />} />
             <Route path="/savejournal" element={<SaveJournal />} />
+            <Route path="/testing" element={<Testing />} />
         </Routes>
         </AnimatePresence>
     )

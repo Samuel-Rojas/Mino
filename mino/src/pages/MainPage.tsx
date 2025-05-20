@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import JournalEntry from "./JournalEntry.tsx"
 import Sidebar from "./Sidebar.tsx"
 function MainPage() {
@@ -8,17 +8,6 @@ function MainPage() {
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
-
-    const [backendMessage, setBackendMessage] = useState<string | null>('');
-
-    useEffect(() => {
-        fetch('http://localhost:3001/').then(response => response.text()).then(data => {
-            setBackendMessage(data);
-        }).catch(error => {
-            console.error('Error fetching backend:', error);
-            setBackendMessage('Error fetching backend');
-        });
-    }, []);
 
     return (
         <div className="flex h-screen relative">
@@ -32,7 +21,6 @@ function MainPage() {
             style={{transition: 'left 400ms ease-in-out'}}
             >{isSidebarOpen ? '<' : '>'}
             </button>
-            <p>Message from the backend to test:{backendMessage}</p>
         </div>
     );
 }
