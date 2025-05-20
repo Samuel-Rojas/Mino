@@ -3,7 +3,7 @@ import {motion} from 'framer-motion';
 function SaveEntry() {
 
   const resumeBack = () => {
-    window.location.href = '/mainpage';
+    window.location.href = '/testing';
   };
 
   return (

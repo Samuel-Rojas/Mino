@@ -8,6 +8,7 @@ function MainPage() {
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
+
     return (
         <div className="flex h-screen relative">
             {isSidebarOpen && <Sidebar />}
