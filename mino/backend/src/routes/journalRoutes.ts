@@ -23,4 +23,41 @@ router.get('/entries', async (req, res) => {
     }
 });
 
+router.post('/entries', async (req, res): Promise<any> => {
+    console.log("Recieved Post Request from the /api/entries");
+
+    const { title, content } = req.body;
+
+    if(!title || !content) {
+        return res.status(400).json({message: `Title and Content are not recieved`});
+    }
+
+    try {
+        const db = await intitializedDatabase();
+
+        const result = await db.run(
+            `INSERT INTO entries (title, content) VALUES (?, ?)`,
+            [title, content]
+        );
+
+        const newEntryId = result.lastID;
+        console.log(`New entry added with ID: ${newEntryId}`);
+
+        res.status(201).json({
+            message: `Journal entry created successfully`,
+            entry: {
+                id: newEntryId,
+                title, 
+                content,
+                date: new Date().toString()
+            },
+        });
+    } catch (error) {
+        console.log(`Error adding new journal entry to database:`, error);
+        res.status(500).json({message: `Internal Server Error`});
+    }
+    
+});
+
+
 export default router;
