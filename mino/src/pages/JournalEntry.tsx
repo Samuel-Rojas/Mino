@@ -19,6 +19,7 @@ function JournalEntry() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const fetchJournalEntries = async () => {
+    console.log('>> fetchJournalEntries called at', new Date().toISOString());
     setLoadingMessage("Loading journal entries...");
     setErrorMessage(null);
 
@@ -38,9 +39,9 @@ function JournalEntry() {
     }
   };
 
-  useEffect(() => {
-    fetchJournalEntries();
-  }, []);
+  // useEffect(() => {
+  //   fetchJournalEntries();
+  // }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,8 +74,6 @@ function JournalEntry() {
       setFormMessage(responseData.message || "Entry added successfully!");
       setNewEntryTitle("");
       setNewEntryContent("");
-
-      await fetchJournalEntries();
     } catch (error: any) {
       console.error("Error adding new entry: ", error);
       setFormMessage(`Error: ${error.message || "Failed to add entry."}`);
@@ -106,6 +105,26 @@ function JournalEntry() {
         </button>
         {formMessage && <p>{formMessage}</p>}
       </form>
+      <div
+        style={{ maxWidth: "600px", margin: "20px auto", textAlign: "left" }}
+      >
+        {journalEntries.map((entry) => (
+          <div
+            key={entry.id}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <h3>Title: {entry.title || "Untitled Entry"}</h3>
+            <p>{entry.content || "No content."}</p>
+          </div>
+        ))}
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      </div>
+      <button className='border-1 rounder-lg' onClick={fetchJournalEntries}>backend</button>
     </section>
   );
 }
