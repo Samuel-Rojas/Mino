@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
-
-interface JournalEntry {
-  id: number | null;
-  title: string | null;
-  content: string | null;
-  date: string | null;
-}
+import { type EntryTypes } from './Types';
 
 interface JournalProps {
-  entry: JournalEntry | null;
+  entry: EntryTypes | null;
+  onUpdate: (id: number, title: string, content: string) => void;
 }
 
-function JournalEntry({ entry } : JournalProps) {
+function JournalEntry({ entry, onUpdate } : JournalProps) {
   // const [newEntryTitle, setNewEntryTitle] = useState<string>("");
   // const [newEntryContent, setNewEntryContent] = useState<string>("");
   // const [formMessage, setFormMessage] = useState<string | null>(null);
@@ -111,6 +106,14 @@ function JournalEntry({ entry } : JournalProps) {
     //   <button className='border-1 rounder-lg' onClick={fetchJournalEntries}>backend</button>
     // </section>
 
+    const [title, setTitle] = useState(entry?.title || '');
+    const [content, setContent] = useState(entry?.content || '');
+
+    useEffect(() => {
+      setTitle(entry?.title || '');
+      setContent(entry?.content || '');
+    }, [entry]);
+
     if(!entry) {
       return (
         <section className="p-6">
@@ -119,13 +122,28 @@ function JournalEntry({ entry } : JournalProps) {
       );
     }
 
+    const handleSave = () => {
+      onUpdate(entry.id!, title, content);
+    }
+
     return (
       <section className="p-6">
-        <h1 className="text-2xl font-bold mb-4">{entry.title}</h1>
-        <p className="mb-4 whitespace-pre-wrap">{entry.content}</p>
-        <small className="text-gray-400">
-          Date: {entry.date ? new Date(entry.date).toLocaleString() : 'N/A'}
-        </small>
+        <h1 className="text-2xl font-bold mb-4">Edit Entry</h1>
+        <input 
+          className="w-full border rounded px-3 py-2 mb-4"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="Title"
+          />
+          <textarea
+          className="w-full border rounded px-3 py-2 mb-4 h-64 resize-none"
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder="Content"
+          ></textarea>
+          <button
+            onClick={handleSave}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
       </section>
     );
 

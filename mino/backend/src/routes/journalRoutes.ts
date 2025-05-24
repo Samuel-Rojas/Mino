@@ -1,23 +1,17 @@
 import express from 'express';
-import { intitializedDatabase } from '../database.ts';
+import { intitializeDatabase } from '../database.ts';
+import { type EntryTypes } from '../../../src/pages/Types.ts'
 
 
 const router = express.Router();
 const sqlGetCall: string = `SELECT * FROM entries ORDER BY id DESC`;
 
-interface JournalEntry {
-    id: number | null;
-    title: string | null;
-    content: string | null;
-    date: string | null;
-}
-
-router.get('/entries', async (req, res) => {
+router.get('/entries', async (_req, res) => {
     console.log('Recieved GET Request from the backend');
 
     try {
-        const db = await intitializedDatabase();
-        const entries: JournalEntry[] = await db.all<JournalEntry[]>(sqlGetCall);
+        const db = await intitializeDatabase();
+        const entries: EntryTypes[] = await db.all<EntryTypes[]>(sqlGetCall);
         res.json(entries);
     } catch (error) {
         console.error(`Error during the process of the GET Request`, error);
@@ -25,10 +19,38 @@ router.get('/entries', async (req, res) => {
     }
 })
 
-router.delete('/entries/:id', async (req, res) => {
+router.delete('/entries/:id', async (req, res): Promise<any> => {
     const id = Number(req.params.id);
     if(!isNaN(id)){
-        return res.status(400,)
+        return res.status(400).json({message: 'Invalid ID Provided' });
+    }
+    try {
+        const db = await intitializeDatabase();
+        await db.run('DELETE FROM entries WHERE id = ?', [id]);
+        res.json({message: 'Entry Successfully Deleted'});
+    } catch (error){
+        console.error('Error deleting entry:', error);
+        res.status(500).json({error: 'Failed to delte entry'});
+    }
+});
+
+router.put('/entries/:id', async (req, res): Promise<any> => {
+    const id: number = Number(req.params.id);
+    const { title, content } = req.body;
+
+    if(isNaN(id) || !title || !content) {
+        return res.status(400).json({error: 'Valid ID, title and content are required' });
+    }
+    try {
+        const db = await intitializeDatabase();
+        await db.run (
+            'UPDATE entries SET title = ?, content = ? where id = ?',
+            [title, content, id]
+        );
+        res.json({message: 'Entry updated successfully'})
+    } catch (error) {
+        console.error('Error updating entry:', error)
+        res.status(500).json({error: 'Failed to update entry'})
     }
 })
 
@@ -42,7 +64,7 @@ router.post('/entries', async (req, res): Promise<any> => {
     }
 
     try {
-        const db = await intitializedDatabase();
+        const db = await intitializeDatabase();
 
         const result = await db.run(
             `INSERT INTO entries (title, content) VALUES (?, ?)`,
@@ -58,7 +80,7 @@ router.post('/entries', async (req, res): Promise<any> => {
                 id: newEntryId,
                 title, 
                 content,
-                date: new Date().toString()
+                date: new Date().toISOString()
             },
         });
     } catch (error) {

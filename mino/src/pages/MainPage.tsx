@@ -1,21 +1,53 @@
 import { useState, useEffect} from "react";
-import JournalEntry from "./JournalEntry.tsx"
+import { type EntryTypes} from "./Types.ts"
 import Sidebar from "./Sidebar.tsx"
+import JournalEntry from "./JournalEntry.tsx";
+
+
 function MainPage() {
     
     const [isSidebarOpen, setSidebarOpen] = useState(true);
-    const [entries, setEntries] = useState<JournalEntry[]>([]);
+    const [entries, setEntries] = useState<EntryTypes[]>([]);
     const [selectedId, setSelectedId] = useState<number | null>(null);
 
     useEffect(() => {
         fetch('http://localhost:3001/api/entries')
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => setEntries(data))
-        .catch(err => console.error(err))
+        .catch(error => console.error(error))
     }, []);
 
-    const selectedEntry = entries.find((e) => e.id == selectedId || null);
+    const deleteEntry = async (id: number) => {
+        try {
+            await fetch(`http://localhost:3001/api/entries/${id}`, {
+                method: 'DELETE',
+            });
+            setEntries(entries.filter(e => e.id !== id));
+            if(selectedId === id){
+                setSelectedId(null);
+            }
+        } catch (error) {
+            console.error('Failed to delte entry', error);
+        }
+    }
 
+    const updateHandler = async (id: number, title: string, content: string ) => {
+        try {
+            await fetch(`https://localhost:3001/api/entries/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, content }),
+            });
+            setEntries(entries.map(e => (e.id === id ? {...e, title, content} : e))
+        );
+        } catch (error) {
+            console.error('Failed to update entry', error);
+        }
+    }
+
+    const selectedEntry = entries.find((e) => e.id == selectedId || null) || null;
+
+ 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
     };
@@ -26,9 +58,13 @@ function MainPage() {
                 entries={entries}
                 selectedId={selectedId}
                 onSelect={id => setSelectedId(id)}
+                onDelete={deleteEntry}
             />}
             <div className={`flex-grow bg-white transitition-all duration-300`}>
-                <JournalEntry entry={selectedEntry} />
+                <JournalEntry 
+                entry={selectedEntry} 
+                onUpdate={updateHandler}
+                />
             </div>
             <button 
             onClick={toggleSidebar} 
