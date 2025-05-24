@@ -1,5 +1,12 @@
-// No props are needed for the Sidebar component in this full collapse scenario
-function Sidebar() {
+import type JournalEntry from "./JournalEntry";
+
+interface SideProps {
+    entries: JournalEntry[];
+    selectedId: number | null;
+    onSelect: (id: number) => void;
+}
+
+function Sidebar({entries, selectedId, onSelect}: SideProps)  {
     return (
         // Keep the fixed width for the open state
         <div className="w-64 bg-gray-200 p-4 border-r border-gray-300 flex flex-col">
@@ -7,9 +14,17 @@ function Sidebar() {
             <h1 className="text-center text-lg font-semibold mb-6">Journal Entries</h1>
             {/* Past Entries List */}
             <ul className="border-1 rounded-lg flex-grow overflow-y-auto">
-                <li className="p-2 hover:bg-gray-300 cursor-pointer rounded">Dumby 1</li>
-                <li className="p-2 hover:bg-gray-300 cursor-pointer rounded">Dumby 2</li>
-                <li className="p-2 hover:bg-gray-300 cursor-pointer rounded">Dumby 3</li>
+               {entries.map(e => (
+                <li
+                    key={e.id}
+                    onClick={() => onSelect(e.id!)}
+                    className={`
+                    p-2 rounded cursor-pointer
+                    ${e.id === selectedId ? 'bg-gray-300 font-bold': 'hover:bg-gray-300'}    
+                    `}>
+                        {e.title || 'No title'}
+                    </li>
+               ))}
             </ul>
             {/* Username and Logout Button */}
             <div className="mt-10 border-t border-gray-400 pt-4">

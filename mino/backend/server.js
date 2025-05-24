@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 const startServer = async () => {
-
+  
   try {
     await intitializedDatabase();
     console.log('Database intiliazed successfully. Staring the server...');

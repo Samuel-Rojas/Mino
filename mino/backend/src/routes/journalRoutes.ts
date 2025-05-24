@@ -25,6 +25,13 @@ router.get('/entries', async (req, res) => {
     }
 })
 
+router.delete('/entries/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    if(!isNaN(id)){
+        return res.status(400,)
+    }
+})
+
 router.post('/entries', async (req, res): Promise<any> => {
     console.log("Recieved Post Request from the /api/entries");
 
@@ -60,6 +67,8 @@ router.post('/entries', async (req, res): Promise<any> => {
     }
     
 });
+
+
 
 
 export default router;

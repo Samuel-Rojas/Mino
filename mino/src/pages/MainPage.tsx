@@ -1,9 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import JournalEntry from "./JournalEntry.tsx"
 import Sidebar from "./Sidebar.tsx"
 function MainPage() {
     
     const [isSidebarOpen, setSidebarOpen] = useState(true);
+    const [entries, setEntries] = useState<JournalEntry[]>([]);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/api/entries')
+        .then(res => res.json())
+        .then(data => setEntries(data))
+        .catch(err => console.error(err))
+    }, []);
+
+    const selectedEntry = entries.find((e) => e.id == selectedId || null);
 
     const toggleSidebar = () => {
         setSidebarOpen(!isSidebarOpen);
@@ -11,9 +22,13 @@ function MainPage() {
 
     return (
         <div className="flex h-screen relative">
-            {isSidebarOpen && <Sidebar />}
+            {isSidebarOpen && <Sidebar
+                entries={entries}
+                selectedId={selectedId}
+                onSelect={id => setSelectedId(id)}
+            />}
             <div className={`flex-grow bg-white transitition-all duration-300`}>
-                <JournalEntry />
+                <JournalEntry entry={selectedEntry} />
             </div>
             <button 
             onClick={toggleSidebar} 
