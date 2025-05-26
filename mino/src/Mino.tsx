@@ -4,7 +4,7 @@ import Welcome from './pages/Welcome';
 import Login from './pages/Login';
 import MainPage from './pages/MainPage';
 
-function App() {
+function Mino() {
     return (
         <AnimatePresence mode="wait">
         <Routes>
@@ -16,4 +16,4 @@ function App() {
     )
 }
 
-export default App
+export default Mino
