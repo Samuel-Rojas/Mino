@@ -7,6 +7,10 @@ function Login() {
         navigate('/mainpage');
     };
 
+    //Pretty simple, 
+    //Using the same things from the welcome page and just using a textfield for the entry
+    //Will add some authentication soon
+
     return (
         <motion.div
             initial={{ opacity: 0, x: -70 }}
