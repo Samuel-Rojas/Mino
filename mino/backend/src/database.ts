@@ -5,7 +5,7 @@ const DB_PATH = './journal.db';
 
 let db: Awaited<ReturnType<typeof open>> | null = null;
 
-export async function intitializedDatabase() {
+export async function intitializeDatabase() {
     if (db) {
         console.log('Database already initialized');
         return db;
